@@ -1,74 +1,56 @@
-# React + TypeScript + Vite
+# Periscope Landing Page
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Production-ready Docker setup for deploying this Vite + React static site on EC2.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Docker installed on the EC2 instance
+- Port `80` open in the EC2 Security Group
 
-## React Compiler
+## Run with Docker
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Build and run:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+docker build -t periscope-landing-page .
+docker run -d --name periscope-landing-page -p 80:80 --restart unless-stopped periscope-landing-page
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Run with Docker Compose
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+docker compose up -d --build
 ```
-# periscope-landing-page
+
+## Health Check
+
+The container exposes a health endpoint:
+
+```bash
+curl http://localhost/health
+```
+
+Expected response:
+
+```text
+ok
+```
+
+## EC2 Deployment (quick flow)
+
+```bash
+# 1) SSH into EC2
+ssh -i /path/to/key.pem ec2-user@<EC2_PUBLIC_IP>
+
+# 2) Clone and enter repo
+git clone <your-repo-url>
+cd periscope-landing-page
+
+# 3) Start container
+docker compose up -d --build
+
+# 4) Verify
+curl http://localhost/health
+```
+
+Open `http://<EC2_PUBLIC_IP>` in your browser.

@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: periscope-landing-page:latest
+    container_name: periscope-landing-page
+    ports:
+      - "80:80"
+    restart: unless-stopped
