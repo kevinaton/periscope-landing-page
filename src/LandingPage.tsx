@@ -76,7 +76,7 @@ const LandingPage = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 1, ease: "easeOut" }}
+        transition={{ duration: 2, ease: "easeOut" }}
       >
         <motion.div
           className="flex max-w-2xl flex-col items-center text-center"
